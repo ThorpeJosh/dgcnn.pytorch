@@ -276,7 +276,7 @@ class ModelNet40(Dataset):
     def __init__(self, num_points, partition='train'):
         self.data, self.label = load_data_cls(partition)
         self.num_points = num_points
-        self.partition = partition        
+        self.partition = partition
 
     def __getitem__(self, item):
         pointcloud = self.data[item][:self.num_points]

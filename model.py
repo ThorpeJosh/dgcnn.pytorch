@@ -98,7 +98,7 @@ class DGCNN_cls(nn.Module):
     def __init__(self, args, output_channels=40):
         super(DGCNN_cls, self).__init__()
         self.args = args
-        self.k = args.k
+        self.k = args.k # Number of nearest neighbours to use
         
         self.bn1 = nn.BatchNorm2d(64)
         self.bn2 = nn.BatchNorm2d(64)
@@ -121,6 +121,8 @@ class DGCNN_cls(nn.Module):
         self.conv5 = nn.Sequential(nn.Conv1d(512, args.emb_dims, kernel_size=1, bias=False),
                                    self.bn5,
                                    nn.LeakyReLU(negative_slope=0.2))
+        # Classification MLP. Max and Average pooling have been done across all points, so just only fixed number of features exist.
+        # Likely need a robust (Attention based) aggregation here instead of max/mean
         self.linear1 = nn.Linear(args.emb_dims*2, 512, bias=False)
         self.bn6 = nn.BatchNorm1d(512)
         self.dp1 = nn.Dropout(p=args.dropout)
@@ -130,7 +132,7 @@ class DGCNN_cls(nn.Module):
         self.linear3 = nn.Linear(256, output_channels)
 
     def forward(self, x):
-        batch_size = x.size(0)
+        batch_size = x.size(0)                                                #               6features, with k neighbours
         x = get_graph_feature(x, k=self.k)      # (batch_size, 3, num_points) -> (batch_size, 3*2, num_points, k)
         x = self.conv1(x)                       # (batch_size, 3*2, num_points, k) -> (batch_size, 64, num_points, k)
         x1 = x.max(dim=-1, keepdim=False)[0]    # (batch_size, 64, num_points, k) -> (batch_size, 64, num_points)

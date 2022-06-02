@@ -209,10 +209,10 @@ if __name__ == "__main__":
     parser.add_argument('--use_sgd', type=bool, default=True,
                         help='Use SGD')
     parser.add_argument('--lr', type=float, default=0.001, metavar='LR',
-                        help='learning rate (default: 0.001, 0.1 if using sgd)')
+                        help='learning rate (default: 0.001, 0.1 if using sgd)')  #SGD is the default, is 0.01 actually used?
     parser.add_argument('--momentum', type=float, default=0.9, metavar='M',
                         help='SGD momentum (default: 0.9)')
-    parser.add_argument('--scheduler', type=str, default='cos', metavar='N',
+    parser.add_argument('--scheduler', type=str, default='cos', metavar='N',      #Scheduler sets the rate of decay of lr with each epoch
                         choices=['cos', 'step'],
                         help='Scheduler to use, [cos, step]')
     parser.add_argument('--no_cuda', type=bool, default=False,
@@ -221,13 +221,13 @@ if __name__ == "__main__":
                         help='random seed (default: 1)')
     parser.add_argument('--eval', type=bool,  default=False,
                         help='evaluate the model')
-    parser.add_argument('--num_points', type=int, default=1024,
+    parser.add_argument('--num_points', type=int, default=1024,                  # Number of PC points taken from the modelNet40 dataset
                         help='num of points to use')
     parser.add_argument('--dropout', type=float, default=0.5,
                         help='initial dropout rate')
-    parser.add_argument('--emb_dims', type=int, default=1024, metavar='N',
+    parser.add_argument('--emb_dims', type=int, default=1024, metavar='N',     # What is dimensions of embeddings?
                         help='Dimension of embeddings')
-    parser.add_argument('--k', type=int, default=20, metavar='N',
+    parser.add_argument('--k', type=int, default=20, metavar='N',            
                         help='Num of nearest neighbors to use')
     parser.add_argument('--model_path', type=str, default='', metavar='N',
                         help='Pretrained model path')
@@ -238,7 +238,7 @@ if __name__ == "__main__":
     io = IOStream('outputs/' + args.exp_name + '/run.log')
     io.cprint(str(args))
 
-    args.cuda = not args.no_cuda and torch.cuda.is_available()
+    args.cuda = not args.no_cuda and torch.cuda.is_available() # True if GPU enabled and capable
     torch.manual_seed(args.seed)
     if args.cuda:
         io.cprint(
